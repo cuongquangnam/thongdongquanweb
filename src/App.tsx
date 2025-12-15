@@ -26,24 +26,24 @@ interface Images {
 }
 
 const IMAGES: Images = {
-  heroBanner: '/public/mainbanner.jpg',
+  heroBanner: '/mainbanner.jpg',
   storyPhotos: [
     // 'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762331491/crop-file.webp',
     // 'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762095580/crop-file.webp',
     // 'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762331528/crop-file.webp',
-    '/public/legacy_tandung.jpg',
-    '/public/legacy_emperor_1.jpg',
-    '/public/legacy_consulate.jpg',
+    '/legacy_tandung.jpg',
+    '/legacy_emperor_1.jpg',
+    '/legacy_consulate.jpg',
   ],
   experiencePhoto:
     'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1761935461/gioi-thieu-thong-dong-quan-boutique.webp',
   gallery: [
-    '/public/gallery1.webp',
-    '/public/gallery2.webp',
-    '/public/gallery3.webp',
-    '/public/gallery4.webp',
-    '/public/gallery5.webp',
-    '/public/gallery6.webp',
+    '/gallery1.webp',
+    '/gallery2.webp',
+    '/gallery3.webp',
+    '/gallery4.webp',
+    '/gallery5.webp',
+    '/gallery6.webp',
   ],
   avatars: {
     baoNguyen:
@@ -56,16 +56,16 @@ const IMAGES: Images = {
   logo:
     'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762267239/crop-file.webp',
   rooms: [
-    '/public/deluxedtwin.jpg',
-    '/public/premierdeluxedouble.jpg',
-    '/public/familysuite.jpg',
-    '/public/queensuite.jpg',
-    '/public/kingsuite.jpg',
+    '/deluxedtwin.jpg',
+    '/premierdeluxedouble.jpg',
+    '/familysuite.jpg',
+    '/queensuite.jpg',
+    '/kingsuite.jpg',
   ],
   facilities: [
-    '/public/facility-breakfast.jpg',
-    '/public/facility-rooms.jpg',
-    '/public/facility-location.jpg',
+    '/facility-breakfast.jpg',
+    '/facility-rooms.jpg',
+    '/facility-location.jpg',
   ]
 };
 
