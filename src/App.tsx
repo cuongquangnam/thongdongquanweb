@@ -194,7 +194,7 @@ const translations = {
     },
     footer: {
       copyright: '© 2025 Thong Dong Quán Boutique. All rights reserved.',
-      powered: 'Product developed by KiotVietWeb',
+      // powered: 'Product developed by KiotVietWeb',
     },
   },
   vi: {
@@ -291,7 +291,7 @@ const translations = {
     },
     footer: {
       copyright: '© 2025 Thong Dong Quán Boutique. Bảo lưu mọi quyền.',
-      powered: 'Sản phẩm được phát triển bởi KiotVietWeb',
+      // powered: 'Sản phẩm được phát triển bởi KiotVietWeb',
     },
   },
 };
@@ -424,7 +424,7 @@ function App() {
         </div>
         <div className="hero-content">
           <div className="hero-badge">
-            <span>Est. 2024</span>
+            <span>Est. 2025</span>
           </div>
           <h1 className="hero-title">
             <span className="title-line">Thong Dong</span>
@@ -770,7 +770,7 @@ function App() {
         <div className="container">
           <div className="footer-content">
             <p>{t.footer.copyright}</p>
-            <p className="footer-powered">{t.footer.powered}</p>
+            {/* <p className="footer-powered">{t.footer.powered}</p> */}
           </div>
         </div>
       </footer>
