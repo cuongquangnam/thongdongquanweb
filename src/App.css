@@ -118,6 +118,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 2rem;
 }
 
 .logo {
@@ -195,6 +196,8 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .language-toggle {
@@ -1299,12 +1302,35 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 992px) {
-  .nav-links, .nav-actions {
+  .nav-links {
     display: none;
+  }
+  
+  .nav-container {
+    gap: 1rem;
+  }
+  
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: auto;
+    order: 2;
+  }
+  
+  .btn-book {
+    display: none;
+  }
+  
+  .language-toggle {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
   }
   
   .mobile-menu-btn {
     display: flex;
+    order: 3;
+    margin-left: 0.5rem;
   }
   
   .story-grid {
@@ -1397,6 +1423,11 @@ h1, h2, h3, h4, h5, h6 {
   .facility-image-wrapper {
     width: 200px;
     height: 200px;
+  }
+  
+  .language-toggle {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.65rem;
   }
   
   /* .gallery-grid {
