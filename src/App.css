@@ -1267,6 +1267,8 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-ivory);
   text-decoration: none;
   box-shadow: 0 10px 30px rgba(196, 151, 59, 0.4);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   transition:
     width var(--transition-smooth),
     padding var(--transition-smooth),
@@ -1275,12 +1277,36 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow var(--transition-fast);
 }
 
-.floating-call:hover {
-  width: auto;
-  padding: 0 1.25rem 0 1rem;
-  gap: 0.75rem;
-  transform: translateY(-2px);
-  box-shadow: 0 15px 40px rgba(196, 151, 59, 0.5);
+@media (hover: hover) and (pointer: fine) {
+  .floating-call:hover,
+  .floating-call:focus-visible {
+    width: auto;
+    padding: 0 1.25rem 0 1rem;
+    gap: 0.75rem;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(196, 151, 59, 0.5);
+  }
+
+  .floating-call:hover .floating-call__text,
+  .floating-call:focus-visible .floating-call__text {
+    max-width: 180px;
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .floating-call:active {
+    width: auto;
+    padding: 0 1.25rem 0 1rem;
+    gap: 0.75rem;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(196, 151, 59, 0.5);
+  }
+
+  .floating-call:active .floating-call__text {
+    max-width: 180px;
+    opacity: 1;
+  }
 }
 
 .floating-call__icon {
@@ -1308,11 +1334,6 @@ h1, h2, h3, h4, h5, h6 {
   transition:
     max-width var(--transition-smooth),
     opacity var(--transition-smooth);
-}
-
-.floating-call:hover .floating-call__text {
-  max-width: 180px;
-  opacity: 1;
 }
 
 .floating-call__label {
@@ -1484,17 +1505,6 @@ h1, h2, h3, h4, h5, h6 {
   .language-toggle {
     padding: 0.35rem 0.7rem;
     font-size: 0.65rem;
-  }
-
-  .floating-call {
-    width: auto;
-    padding: 0 1rem 0 0.85rem;
-    gap: 0.65rem;
-  }
-
-  .floating-call__text {
-    max-width: 180px;
-    opacity: 1;
   }
   
   /* .gallery-grid {
