@@ -1249,31 +1249,87 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.75rem !important;
 }
 
-/* Floating Book Button */
-.floating-book {
+/* Floating Call Button */
+.floating-call {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 60px;
-  height: 60px;
-  background: var(--color-gold);
-  border-radius: 50%;
+  z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-gold);
+  color: var(--color-ivory);
   text-decoration: none;
   box-shadow: 0 10px 30px rgba(196, 151, 59, 0.4);
-  z-index: 100;
-  transition: var(--transition-fast);
+  transition:
+    width var(--transition-smooth),
+    padding var(--transition-smooth),
+    gap var(--transition-smooth),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
-.floating-book:hover {
-  transform: scale(1.1);
+.floating-call:hover {
+  width: auto;
+  padding: 0 1.25rem 0 1rem;
+  gap: 0.75rem;
+  transform: translateY(-2px);
   box-shadow: 0 15px 40px rgba(196, 151, 59, 0.5);
 }
 
-.floating-book span {
-  font-size: 1.5rem;
+.floating-call__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+}
+
+.floating-call__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.floating-call__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width var(--transition-smooth),
+    opacity var(--transition-smooth);
+}
+
+.floating-call:hover .floating-call__text {
+  max-width: 180px;
+  opacity: 1;
+}
+
+.floating-call__label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.floating-call__number {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
 }
 
 /* Responsive */
@@ -1428,6 +1484,17 @@ h1, h2, h3, h4, h5, h6 {
   .language-toggle {
     padding: 0.35rem 0.7rem;
     font-size: 0.65rem;
+  }
+
+  .floating-call {
+    width: auto;
+    padding: 0 1rem 0 0.85rem;
+    gap: 0.65rem;
+  }
+
+  .floating-call__text {
+    max-width: 180px;
+    opacity: 1;
   }
   
   /* .gallery-grid {

@@ -69,6 +69,9 @@ const IMAGES: Images = {
   ]
 };
 
+const PHONE_PRIMARY = '0916134599';
+const PHONE_DISPLAY = '091 613 4599';
+
 const ROOMS: Room[] = [
   { name: 'Deluxe Twin', price: '1.100.000', badge: 'Popular' },
   { name: 'Premier Deluxe Double', price: '1.500.000', badge: 'Best Value' },
@@ -192,6 +195,9 @@ const translations = {
       branch: 'Branch system',
       facebook: 'Facebook Page',
     },
+    floatingCall: {
+      label: 'Call us',
+    },
     footer: {
       copyright: '© 2025 Thong Dong Quán Boutique. All rights reserved.',
       // powered: 'Product developed by KiotVietWeb',
@@ -289,6 +295,9 @@ const translations = {
       branch: 'Hệ Thống Chi Nhánh',
       facebook: 'Trang Facebook',
     },
+    floatingCall: {
+      label: 'Gọi ngay',
+    },
     footer: {
       copyright: '© 2025 Thong Dong Quán Boutique. Bảo lưu mọi quyền.',
       // powered: 'Sản phẩm được phát triển bởi KiotVietWeb',
@@ -353,14 +362,27 @@ function App() {
             >
               {language === 'en' ? 'VI' : 'EN'}
             </button>
-            <a
-              href="https://bookhotel.kiotviet.vn/bb26440c"
-              className="btn-book"
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t.nav.bookNow}
-            </a>
+            {
+              language === 'en' ? (
+                <a
+                  href="https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.en.html"
+                  className="btn-book"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t.nav.bookNow}
+                </a>
+              ) : (
+                <a
+                  href="https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.vi.html"
+                  className="btn-book"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t.nav.bookNow}
+                </a>
+              )
+            }
           </div>
           <button
             className={`mobile-menu-btn ${mobileMenuOpen ? 'active' : ''}`}
@@ -405,7 +427,7 @@ function App() {
           </li>
           <li>
             <a
-              href="https://bookhotel.kiotviet.vn/bb26440c"
+              href={language === 'en' ? 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.en.html' : 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.vi.html'}
               className="mobile-book-btn"
               target="_blank"
               rel="noreferrer"
@@ -436,7 +458,7 @@ function App() {
               {t.hero.discover}
             </button>
             <a
-              href="https://bookhotel.kiotviet.vn/bb26440c"
+              href={language === 'en' ? 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.en.html' : 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.vi.html'}
               className="btn-outline"
               target="_blank"
               rel="noreferrer"
@@ -651,7 +673,7 @@ function App() {
                     <span className="per">{t.rooms.perNight}</span>
                   </div>
                   <a
-                    href="https://bookhotel.kiotviet.vn/bb26440c"
+                    href={language === 'en' ? 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.en.html' : 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.vi.html'}
                     className="btn-room"
                     target="_blank"
                     rel="noreferrer"
@@ -735,7 +757,7 @@ function App() {
                   <h4>{t.contact.connect}</h4>
                   <div className="contact-item">
                     <span className="contact-icon">📞</span>
-                    <a href="tel:0916134599">091 613 4599</a>
+                    <a href={`tel:${PHONE_PRIMARY}`}>{PHONE_DISPLAY}</a>
                   </div>
                   <div className="contact-item">
                     <span className="contact-icon">📱</span>
@@ -775,14 +797,21 @@ function App() {
         </div>
       </footer>
 
-      {/* Floating Book Button */}
+      {/* Floating Call Button */}
       <a
-        href="https://bookhotel.kiotviet.vn/bb26440c"
-        className="floating-book"
-        target="_blank"
-        rel="noreferrer"
+        href={`tel:${PHONE_PRIMARY}`}
+        className="floating-call"
+        aria-label={`${t.floatingCall.label}: ${PHONE_DISPLAY}`}
       >
-        <span>📞</span>
+        <span className="floating-call__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
+        </span>
+        <span className="floating-call__text">
+          <span className="floating-call__label">{t.floatingCall.label}</span>
+          <span className="floating-call__number">{PHONE_DISPLAY}</span>
+        </span>
       </a>
     </div>
   );
