@@ -35,8 +35,7 @@ const IMAGES: Images = {
     '/legacy_emperor_1.jpg',
     '/legacy_consulate.jpg',
   ],
-  experiencePhoto:
-    'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1761935461/gioi-thieu-thong-dong-quan-boutique.webp',
+  experiencePhoto: '/experience.webp',
   gallery: [
     '/gallery1.webp',
     '/gallery2.webp',
@@ -46,15 +45,11 @@ const IMAGES: Images = {
     '/gallery6.webp',
   ],
   avatars: {
-    baoNguyen:
-      'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762247259/crop-file.webp',
-    nhiTran:
-      'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762247638/crop-file.webp',
-    thanhThao:
-      'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762267857/crop-file.webp',
+    baoNguyen: '/avatar-bao.webp',
+    nhiTran: '/avatar-nhi.webp',
+    thanhThao: '/avatar-thao.webp',
   },
-  logo:
-    'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762267239/crop-file.webp',
+  logo: '/logo-mark.webp',
   rooms: [
     '/deluxedtwin.jpg',
     '/premierdeluxedouble.jpg',
