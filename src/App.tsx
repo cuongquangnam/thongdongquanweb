@@ -16,7 +16,7 @@ interface Testimonial {
 
 interface Images {
   heroBanner: string;
-  storyPhotos: string[];
+  storyPhoto: string;
   experiencePhoto: string;
   gallery: string[];
   avatars: { baoNguyen: string; nhiTran: string; thanhThao: string };
@@ -27,14 +27,7 @@ interface Images {
 
 const IMAGES: Images = {
   heroBanner: '/mainbanner.jpg',
-  storyPhotos: [
-    // 'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762331491/crop-file.webp',
-    // 'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762095580/crop-file.webp',
-    // 'https://cdn.kiotvietweb.vn/merchant/0d44f8017f8985c6901bc9ddcf80f1ea/cropped/1762331528/crop-file.webp',
-    '/legacy_tandung.jpg',
-    '/legacy_emperor_1.jpg',
-    '/legacy_consulate.jpg',
-  ],
+  storyPhoto: '/legacy_consulate.jpg',
   experiencePhoto: '/experience.webp',
   gallery: [
     '/gallery1.webp',
@@ -500,9 +493,7 @@ function App() {
             </div>
             <div className="story-image-col">
               <div className="story-collage">
-                <img src={IMAGES.storyPhotos[0]} alt="Imperial Hotel Ceremony" className="story-collage__small story-collage__top-left" />
-                <img src={IMAGES.storyPhotos[1]} alt="Award Ceremony" className="story-collage__main" />
-                <img src={IMAGES.storyPhotos[2]} alt="Imperial Hotel Team" className="story-collage__small story-collage__bottom-right" />
+                <img src={IMAGES.storyPhoto} alt="Imperial Hotel Team" className="story-collage__main" />
               </div>
             </div>
           </div>
