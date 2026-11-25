@@ -1,7 +1,7 @@
 import { requireAdmin } from '../../lib/auth.js';
 import { readJson, sendJson } from '../../lib/http.js';
 import { parseChannelSheet } from '../../lib/parseSheet.js';
-import { updateStore } from '../../lib/store.js';
+import { saveChannelBookings } from '../../lib/db.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'Method not allowed.' });
@@ -27,28 +27,13 @@ export default async function handler(req, res) {
     rows.push(booking);
     incoming.set(booking.code, rows);
   }
-  let added = 0;
-  let updated = 0;
-  const store = await updateStore((current) => {
-    const bookings = { ...current.bookings };
-    for (const [reference, rows] of incoming) {
-      const first = rows[0];
-      if (bookings[reference]?.source === 'channel') updated += 1;
-      else added += 1;
-      bookings[reference] = {
-        reference,
-        source: 'channel',
-        guestName: first.guestName || '',
-        channel: first.channel || '',
-        checkIn: first.checkIn,
-        checkOut: first.checkOut,
-        status: first.status,
-        amount: first.amount || 0,
-        rooms: rows.map((row) => ({ roomId: row.roomId, units: row.units || 1 })),
-      };
-    }
-    return { ...current, bookings, lastImportAt: new Date().toISOString() };
-  });
+  let saved;
+  try {
+    saved = await saveChannelBookings(incoming);
+  } catch (error) {
+    return sendJson(res, error.status || 500, { error: error.message });
+  }
+  const { added, updated, lastImportAt } = saved;
   const released = channel.filter((booking) => booking.status === 'cancelled').length;
   return sendJson(res, 200, {
     ok: true,
@@ -56,6 +41,6 @@ export default async function handler(req, res) {
     added,
     updated,
     released,
-    lastImportAt: store.lastImportAt,
+    lastImportAt,
   });
 }

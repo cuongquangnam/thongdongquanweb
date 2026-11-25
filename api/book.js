@@ -1,10 +1,9 @@
 import crypto from 'node:crypto';
-import { availabilityForStay } from '../lib/availability.js';
+import { availabilityForStay, createDirectBooking } from '../lib/db.js';
 import { nightsBetween } from '../lib/dates.js';
 import { readJson, requestOrigin, sendJson } from '../lib/http.js';
 import { createPaymentUrl, ninepayConfigured } from '../lib/ninepay.js';
 import { roomById } from '../lib/rooms.js';
-import { readStore, updateStore } from '../lib/store.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'Method not allowed.' });
@@ -26,29 +25,15 @@ export default async function handler(req, res) {
 
   const amount = room.price * nights;
   const invoice = `TDQ${Date.now().toString(36)}${crypto.randomBytes(2).toString('hex')}`.slice(0, 30).toUpperCase();
-  const store = await readStore();
-  const available = availabilityForStay(store, checkIn, checkOut).find((item) => item.id === room.id);
-  if (!available || available.available < 1) {
-    return sendJson(res, 409, { error: 'That room is no longer available for these dates.' });
+  try {
+    const available = (await availabilityForStay(checkIn, checkOut)).find((item) => item.id === room.id);
+    if (!available || available.available < 1) {
+      return sendJson(res, 409, { error: 'That room is no longer available for these dates.' });
+    }
+    await createDirectBooking({ reference: invoice, guestName, email, phone, checkIn, checkOut, amount, roomId: room.id });
+  } catch (error) {
+    return sendJson(res, error.status || 500, { error: error.message });
   }
-
-  await updateStore((current) => {
-    current.bookings[invoice] = {
-      reference: invoice,
-      source: 'direct',
-      guestName,
-      email,
-      phone,
-      checkIn,
-      checkOut,
-      status: 'pending',
-      amount,
-      rooms: [{ roomId: room.id, units: 1 }],
-      channelUpdated: false,
-      createdAt: new Date().toISOString(),
-    };
-    return current;
-  });
 
   const origin = requestOrigin(req);
   const paymentUrl = createPaymentUrl({

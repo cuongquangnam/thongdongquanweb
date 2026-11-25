@@ -1,7 +1,7 @@
 import { requireAdmin } from '../../lib/auth.js';
 import { readJson, sendJson } from '../../lib/http.js';
 import { ROOMS } from '../../lib/rooms.js';
-import { updateStore } from '../../lib/store.js';
+import { saveInventory } from '../../lib/db.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'Method not allowed.' });
@@ -15,6 +15,6 @@ export default async function handler(req, res) {
     }
     inventory[room.id] = value;
   }
-  await updateStore((store) => ({ ...store, inventory }));
+  await saveInventory(inventory);
   return sendJson(res, 200, { ok: true, inventory });
 }
