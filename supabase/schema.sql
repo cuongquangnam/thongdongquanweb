@@ -66,8 +66,8 @@ language plpgsql
 security definer
 as $$
 begin
-  delete from room_night_bookings;
-  delete from room_nights;
+  delete from room_night_bookings where room_id is not null;
+  delete from room_nights where room_id is not null;
 
   insert into room_night_bookings (room_id, night, reference)
   select br.room_id, d::date, b.reference
