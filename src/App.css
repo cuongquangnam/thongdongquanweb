@@ -1651,7 +1651,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .desk-main {
-  width: min(980px, calc(100% - 2rem));
+  width: min(1180px, calc(100% - 2rem));
   margin: 2rem auto 4rem;
   display: grid;
   gap: 1.5rem;
@@ -1810,6 +1810,51 @@ h1, h2, h3, h4, h5, h6 {
   gap: 0.2rem;
   padding-top: 0.8rem;
   border-top: 1px solid rgba(93, 78, 55, 0.15);
+}
+
+.booking-scroll {
+  overflow-x: auto;
+  margin-top: 0.5rem;
+}
+
+.booking-list {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  background: white;
+}
+
+.booking-list th {
+  text-align: left;
+  font-weight: 500;
+  color: #8a8172;
+  padding: 0.75rem 0.7rem;
+  border-bottom: 1px solid rgba(93, 78, 55, 0.15);
+  white-space: nowrap;
+}
+
+.booking-list td {
+  padding: 0.85rem 0.7rem;
+  border-bottom: 1px solid rgba(93, 78, 55, 0.1);
+  vertical-align: top;
+}
+
+.booking-list .item-lines {
+  display: grid;
+}
+
+.booking-status {
+  text-transform: capitalize;
+}
+
+.booking-status.is-confirmed,
+.booking-status.is-operational,
+.booking-status.is-paid {
+  color: #2f7d32;
+}
+
+.booking-status.is-cancelled {
+  color: #8a8172;
 }
 
 @media (max-width: 700px) {

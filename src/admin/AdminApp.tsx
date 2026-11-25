@@ -1,13 +1,18 @@
 import { FormEvent, useEffect, useState } from 'react';
 import '../App.css';
-import { formatVnd } from '../../lib/rooms.js';
+import { formatVnd, roomById } from '../../lib/rooms.js';
 
-type DirectBooking = {
+type BookingRoom = { roomId: string; units: number };
+
+type ListedBooking = {
   id: string;
   guestName: string;
   email: string;
   phone: string;
+  channel?: string;
+  source?: string;
   roomId: string;
+  rooms?: BookingRoom[];
   checkIn: string;
   checkOut: string;
   amount: number;
@@ -21,8 +26,19 @@ type Session = {
   rooms?: { id: string; name: string }[];
   lastImportAt?: string | null;
   channelCount?: number;
-  direct?: DirectBooking[];
+  bookings?: ListedBooking[];
+  direct?: ListedBooking[];
 };
+
+function formatStayDate(value: string) {
+  if (!value) return '';
+  return new Date(`${value}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function roomLines(booking: ListedBooking) {
+  const lines = (booking.rooms || []).flatMap((room) => Array.from({ length: room.units || 1 }, () => roomById(room.roomId)?.name || room.roomId));
+  return lines.length ? lines : [roomById(booking.roomId)?.name || booking.roomId || ''];
+}
 
 export default function AdminApp() {
   const [session, setSession] = useState<Session>({ signedIn: false });
@@ -179,6 +195,48 @@ export default function AdminApp() {
                 ))}
                 <button className="desk-button" type="submit">Save counts</button>
               </form>
+            </section>
+            <section className="desk-card">
+              <h2>Bookings</h2>
+              {(session.bookings || []).length === 0 ? <p>No bookings stored yet. Upload the channel-manager spreadsheet.</p> : (
+                <div className="booking-scroll">
+                  <table className="booking-list">
+                    <thead>
+                      <tr>
+                        <th>Reference #</th>
+                        <th>Guest Name</th>
+                        <th>Source</th>
+                        <th>Item</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {session.bookings?.map((booking) => (
+                        <tr key={booking.id}>
+                          <td>{booking.id}</td>
+                          <td>{booking.guestName}</td>
+                          <td>{booking.channel || (booking.source === 'direct' ? 'Website' : '')}</td>
+                          <td className="item-lines">{roomLines(booking).map((line, index) => <span key={`${line}-${index}`}>{line}</span>)}</td>
+                          <td>{formatStayDate(booking.checkIn)}</td>
+                          <td>{formatStayDate(booking.checkOut)}</td>
+                          <td>₫ {formatVnd(booking.amount)}</td>
+                          <td className={`booking-status is-${booking.status}`}>{booking.status}</td>
+                          <td>
+                            {booking.source === 'direct' && booking.status === 'paid' && !booking.channelUpdated && (
+                              <button className="desk-text" type="button" onClick={() => markUpdated(booking.id)}>Mark as entered</button>
+                            )}
+                            {booking.source === 'direct' && booking.channelUpdated && <em>Entered</em>}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </section>
             <section className="desk-card">
               <h2>Website payments to enter in the channel manager</h2>

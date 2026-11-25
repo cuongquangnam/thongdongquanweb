@@ -75,7 +75,7 @@ begin
   join booking_rooms br on br.reference = b.reference
   cross join generate_series(b.check_in, b.check_out - 1, interval '1 day') as d
   where (
-    b.source = 'channel' and b.status in ('confirmed', 'completed')
+    b.source = 'channel' and b.status in ('confirmed', 'completed', 'operational')
   ) or (
     b.source = 'direct' and (
       b.status = 'paid'
