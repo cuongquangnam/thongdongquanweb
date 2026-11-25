@@ -217,19 +217,19 @@ export default function AdminApp() {
                     <tbody>
                       {session.bookings?.map((booking) => (
                         <tr key={booking.id}>
-                          <td>{booking.id}</td>
-                          <td>{booking.guestName}</td>
-                          <td>{booking.channel || (booking.source === 'direct' ? 'Website' : '')}</td>
+                          <td className="ref">{booking.id}</td>
+                          <td className="guest">{booking.guestName}</td>
+                          <td><span className="source-pill">{booking.channel || (booking.source === 'direct' ? 'Website' : 'Channel')}</span></td>
                           <td className="item-lines">{roomLines(booking).map((line, index) => <span key={`${line}-${index}`}>{line}</span>)}</td>
-                          <td>{formatStayDate(booking.checkIn)}</td>
-                          <td>{formatStayDate(booking.checkOut)}</td>
-                          <td>₫ {formatVnd(booking.amount)}</td>
-                          <td className={`booking-status is-${booking.status}`}>{booking.status}</td>
-                          <td>
+                          <td className="date">{formatStayDate(booking.checkIn)}</td>
+                          <td className="date">{formatStayDate(booking.checkOut)}</td>
+                          <td className="amount">₫ {formatVnd(booking.amount)}</td>
+                          <td><span className={`status-pill is-${booking.status}`}>{booking.status}</span></td>
+                          <td className="action">
                             {booking.source === 'direct' && booking.status === 'paid' && !booking.channelUpdated && (
-                              <button className="desk-text" type="button" onClick={() => markUpdated(booking.id)}>Mark as entered</button>
+                              <button className="booking-action" type="button" onClick={() => markUpdated(booking.id)}>Mark as entered</button>
                             )}
-                            {booking.source === 'direct' && booking.channelUpdated && <em>Entered</em>}
+                            {booking.source === 'direct' && booking.channelUpdated && <span className="status-pill is-paid">Entered</span>}
                           </td>
                         </tr>
                       ))}
