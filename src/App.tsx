@@ -353,19 +353,15 @@ function App() {
             {
               language === 'en' ? (
                 <a
-                  href="https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.en.html"
+                  href="/book"
                   className="btn-book"
-                  target="_blank"
-                  rel="noreferrer"
                 >
                   {t.nav.bookNow}
                 </a>
               ) : (
                 <a
-                  href="https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.vi.html"
+                  href="/book"
                   className="btn-book"
-                  target="_blank"
-                  rel="noreferrer"
                 >
                   {t.nav.bookNow}
                 </a>
@@ -415,10 +411,8 @@ function App() {
           </li>
           <li>
             <a
-              href={language === 'en' ? 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.en.html' : 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.vi.html'}
+              href="/book"
               className="mobile-book-btn"
-              target="_blank"
-              rel="noreferrer"
             >
               {t.nav.bookNow}
             </a>
@@ -446,10 +440,8 @@ function App() {
               {t.hero.discover}
             </button>
             <a
-              href={language === 'en' ? 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.en.html' : 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.vi.html'}
+              href="/book"
               className="btn-outline"
-              target="_blank"
-              rel="noreferrer"
             >
               {t.hero.reserve}
             </a>
@@ -659,10 +651,8 @@ function App() {
                     <span className="per">{t.rooms.perNight}</span>
                   </div>
                   <a
-                    href={language === 'en' ? 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.en.html' : 'https://www.booking.com/hotel/vn/thongdong-quan-boutique-hue.vi.html'}
+                    href="/book"
                     className="btn-room"
-                    target="_blank"
-                    rel="noreferrer"
                   >
                     {t.rooms.bookNow}
                   </a>
