@@ -1954,6 +1954,32 @@ h1, h2, h3, h4, h5, h6 {
   background: #f8efd8;
 }
 
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  color: var(--color-brown);
+  font-size: 0.85rem;
+}
+
+.pager-button {
+  border: 1px solid rgba(93, 78, 55, 0.25);
+  background: white;
+  color: var(--color-dark);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.pager-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 @media (max-width: 700px) {
   .desk-dates {
     grid-template-columns: 1fr;

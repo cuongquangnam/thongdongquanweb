@@ -38,12 +38,36 @@ function roomLines(booking: ListedBooking) {
   return lines.length ? lines : [roomById(booking.roomId)?.name || booking.roomId || ''];
 }
 
+const PAGE_SIZE = 10;
+
+function pageWindow<T>(items: T[], page: number) {
+  const pages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const current = Math.min(Math.max(page, 1), pages);
+  const start = (current - 1) * PAGE_SIZE;
+  return { current, pages, rows: items.slice(start, start + PAGE_SIZE) };
+}
+
+function Pager({ page, pages, total, onPage }: { page: number; pages: number; total: number; onPage: (page: number) => void }) {
+  const start = (page - 1) * PAGE_SIZE + 1;
+  const end = Math.min(total, page * PAGE_SIZE);
+  return (
+    <div className="pager">
+      <span>{start}–{end} of {total}</span>
+      <button className="pager-button" type="button" disabled={page <= 1} onClick={() => onPage(page - 1)}>Previous</button>
+      <span>Page {page} of {pages}</span>
+      <button className="pager-button" type="button" disabled={page >= pages} onClick={() => onPage(page + 1)}>Next</button>
+    </div>
+  );
+}
+
 export default function AdminApp() {
   const [session, setSession] = useState<Session>({ signedIn: false });
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [bookingPage, setBookingPage] = useState(1);
+  const [paymentPage, setPaymentPage] = useState(1);
 
   async function refresh() {
     const response = await fetch('/api/admin/session', { credentials: 'include' });
@@ -124,6 +148,11 @@ export default function AdminApp() {
     await refresh();
   }
 
+  const bookings = session.bookings || [];
+  const payments = (session.direct || []).filter((booking) => booking.status === 'paid');
+  const bookingView = pageWindow(bookings, bookingPage);
+  const paymentView = pageWindow(payments, paymentPage);
+
   return (
     <div className="desk">
       <header className="desk-bar">
@@ -158,60 +187,67 @@ export default function AdminApp() {
             </section>
             <section className="desk-card">
               <h2>Bookings</h2>
-              {(session.bookings || []).length === 0 ? <p>No bookings stored yet. Upload the channel-manager spreadsheet.</p> : (
-                <div className="booking-scroll">
-                  <table className="booking-list">
-                    <thead>
-                      <tr>
-                        <th>Reference #</th>
-                        <th>Guest Name</th>
-                        <th>Source</th>
-                        <th>Item</th>
-                        <th>Check-in</th>
-                        <th>Check-out</th>
-                        <th>Total Amount</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {session.bookings?.map((booking) => (
-                        <tr key={booking.id}>
-                          <td className="ref">{booking.id}</td>
-                          <td className="guest">{booking.guestName}</td>
-                          <td><span className="source-pill">{booking.channel || (booking.source === 'direct' ? 'Website' : 'Channel')}</span></td>
-                          <td className="item-lines">{roomLines(booking).map((line, index) => <span key={`${line}-${index}`}>{line}</span>)}</td>
-                          <td className="date">{formatStayDate(booking.checkIn)}</td>
-                          <td className="date">{formatStayDate(booking.checkOut)}</td>
-                          <td className="amount">₫ {formatVnd(booking.amount)}</td>
-                          <td><span className={`status-pill is-${booking.status}`}>{booking.status}</span></td>
-                          <td className="action">
-                            {booking.source === 'direct' && booking.status === 'paid' && !booking.channelUpdated && (
-                              <button className="booking-action" type="button" onClick={() => markUpdated(booking.id)}>Mark as entered</button>
-                            )}
-                            {booking.source === 'direct' && booking.channelUpdated && <span className="status-pill is-paid">Entered</span>}
-                          </td>
+              {bookings.length === 0 ? <p>No bookings stored yet. Upload the channel-manager spreadsheet.</p> : (
+                <>
+                  <div className="booking-scroll">
+                    <table className="booking-list">
+                      <thead>
+                        <tr>
+                          <th>Reference #</th>
+                          <th>Guest Name</th>
+                          <th>Source</th>
+                          <th>Item</th>
+                          <th>Check-in</th>
+                          <th>Check-out</th>
+                          <th>Total Amount</th>
+                          <th>Status</th>
+                          <th>Action</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody>
+                        {bookingView.rows.map((booking) => (
+                          <tr key={booking.id}>
+                            <td className="ref">{booking.id}</td>
+                            <td className="guest">{booking.guestName}</td>
+                            <td><span className="source-pill">{booking.channel || (booking.source === 'direct' ? 'Website' : 'Channel')}</span></td>
+                            <td className="item-lines">{roomLines(booking).map((line, index) => <span key={`${line}-${index}`}>{line}</span>)}</td>
+                            <td className="date">{formatStayDate(booking.checkIn)}</td>
+                            <td className="date">{formatStayDate(booking.checkOut)}</td>
+                            <td className="amount">₫ {formatVnd(booking.amount)}</td>
+                            <td><span className={`status-pill is-${booking.status}`}>{booking.status}</span></td>
+                            <td className="action">
+                              {booking.source === 'direct' && booking.status === 'paid' && !booking.channelUpdated && (
+                                <button className="booking-action" type="button" onClick={() => markUpdated(booking.id)}>Mark as entered</button>
+                              )}
+                              {booking.source === 'direct' && booking.channelUpdated && <span className="status-pill is-paid">Entered</span>}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <Pager page={bookingView.current} pages={bookingView.pages} total={bookings.length} onPage={setBookingPage} />
+                </>
               )}
             </section>
             <section className="desk-card">
               <h2>Website payments to enter in the channel manager</h2>
-              <div className="desk-table">
-                {(session.direct || []).filter((booking) => booking.status === 'paid').map((booking) => (
-                  <article key={booking.id}>
-                    <strong>{booking.guestName}</strong>
-                    <span>{booking.roomId} · {booking.checkIn} → {booking.checkOut}</span>
-                    <span>{booking.phone} · {booking.email}</span>
-                    <span>{formatVnd(booking.amount)} VND</span>
-                    {booking.channelUpdated ? <em>Entered</em> : <button className="desk-text" type="button" onClick={() => markUpdated(booking.id)}>Mark as entered</button>}
-                  </article>
-                ))}
-                {(session.direct || []).every((booking) => booking.status !== 'paid') && <p>No paid website bookings yet.</p>}
-              </div>
+              {payments.length === 0 ? <p>No paid website bookings yet.</p> : (
+                <>
+                  <div className="desk-table">
+                    {paymentView.rows.map((booking) => (
+                      <article key={booking.id}>
+                        <strong>{booking.guestName}</strong>
+                        <span>{booking.roomId} · {booking.checkIn} → {booking.checkOut}</span>
+                        <span>{booking.phone} · {booking.email}</span>
+                        <span>{formatVnd(booking.amount)} VND</span>
+                        {booking.channelUpdated ? <em>Entered</em> : <button className="desk-text" type="button" onClick={() => markUpdated(booking.id)}>Mark as entered</button>}
+                      </article>
+                    ))}
+                  </div>
+                  <Pager page={paymentView.current} pages={paymentView.pages} total={payments.length} onPage={setPaymentPage} />
+                </>
+              )}
             </section>
           </>
         )}
