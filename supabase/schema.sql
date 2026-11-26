@@ -30,20 +30,6 @@ create table if not exists booking_rooms (
   primary key (reference, room_id)
 );
 
-create table if not exists room_nights (
-  room_id text not null,
-  night date not null,
-  available integer not null,
-  primary key (room_id, night)
-);
-
-create table if not exists room_night_bookings (
-  room_id text not null,
-  night date not null,
-  reference text not null references bookings (reference) on delete cascade,
-  primary key (room_id, night, reference)
-);
-
 create table if not exists settings (
   key text primary key,
   value text not null
@@ -56,44 +42,25 @@ on conflict (room_id) do nothing;
 alter table inventory enable row level security;
 alter table bookings enable row level security;
 alter table booking_rooms enable row level security;
-alter table room_nights enable row level security;
-alter table room_night_bookings enable row level security;
 alter table settings enable row level security;
 
-create or replace function refresh_room_nights()
-returns void
-language plpgsql
-security definer
-as $$
+-- Availability is calculated from bookings when a guest checks dates.
+drop function if exists refresh_room_nights();
+drop function if exists cancel_expired_holds();
+drop view if exists room_nights;
+drop view if exists room_night_bookings;
+drop table if exists room_night_bookings;
+drop table if exists room_nights;
+
+do $$
+declare
+  existing bigint;
 begin
-  delete from room_night_bookings where room_id is not null;
-  delete from room_nights where room_id is not null;
-
-  insert into room_night_bookings (room_id, night, reference)
-  select br.room_id, d::date, b.reference
-  from bookings b
-  join booking_rooms br on br.reference = b.reference
-  cross join generate_series(b.check_in, b.check_out - 1, interval '1 day') as d
-  where (
-    b.source = 'channel' and b.status in ('confirmed', 'completed', 'operational')
-  ) or (
-    b.source = 'direct' and (
-      b.status = 'paid'
-      or (b.status = 'pending' and b.created_at > now() - interval '30 minutes')
-    )
-  );
-
-  insert into room_nights (room_id, night, available)
-  select held.room_id, held.night, greatest(0, i.total - held.used)
-  from (
-    select rnb.room_id, rnb.night, sum(br.units) as used
-    from room_night_bookings rnb
-    join booking_rooms br on br.reference = rnb.reference and br.room_id = rnb.room_id
-    group by rnb.room_id, rnb.night
-  ) held
-  join inventory i on i.room_id = held.room_id;
-end;
-$$;
-
-revoke all on function refresh_room_nights() from public;
-grant execute on function refresh_room_nights() to service_role;
+  if to_regnamespace('cron') is null then
+    return;
+  end if;
+  select jobid into existing from cron.job where jobname = 'cancel-expired-holds';
+  if existing is not null then
+    perform cron.unschedule(existing);
+  end if;
+end $$;
