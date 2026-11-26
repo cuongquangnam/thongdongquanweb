@@ -22,8 +22,6 @@ type ListedBooking = {
 
 type Session = {
   signedIn: boolean;
-  inventory?: Record<string, number>;
-  rooms?: { id: string; name: string }[];
   lastImportAt?: string | null;
   channelCount?: number;
   bookings?: ListedBooking[];
@@ -43,7 +41,6 @@ function roomLines(booking: ListedBooking) {
 export default function AdminApp() {
   const [session, setSession] = useState<Session>({ signedIn: false });
   const [password, setPassword] = useState('');
-  const [inventory, setInventory] = useState<Record<string, number>>({});
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -52,7 +49,6 @@ export default function AdminApp() {
     const response = await fetch('/api/admin/session', { credentials: 'include' });
     const body = await response.json();
     setSession(body);
-    setInventory(body.inventory || {});
   }
 
   useEffect(() => {
@@ -84,24 +80,6 @@ export default function AdminApp() {
   async function logout() {
     await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' });
     setSession({ signedIn: false });
-  }
-
-  async function saveInventory(event: FormEvent) {
-    event.preventDefault();
-    setError('');
-    setMessage('');
-    const response = await fetch('/api/admin/inventory', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ inventory }),
-    });
-    const body = await response.json();
-    if (!response.ok) {
-      setError(body.error || 'Could not save room counts.');
-      return;
-    }
-    setMessage('Room counts saved.');
   }
 
   async function upload(event: FormEvent<HTMLFormElement>) {
@@ -177,24 +155,6 @@ export default function AdminApp() {
               </form>
               {message && <p className="desk-note">{message}</p>}
               {error && <p className="desk-error">{error}</p>}
-            </section>
-            <section className="desk-card">
-              <h2>Rooms in the hotel</h2>
-              <form className="desk-form" onSubmit={saveInventory}>
-                {session.rooms?.map((room) => (
-                  <label key={room.id}>
-                    {room.name}
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={inventory[room.id] ?? 0}
-                      onChange={(event) => setInventory({ ...inventory, [room.id]: Number(event.target.value) })}
-                    />
-                  </label>
-                ))}
-                <button className="desk-button" type="submit">Save counts</button>
-              </form>
             </section>
             <section className="desk-card">
               <h2>Bookings</h2>
