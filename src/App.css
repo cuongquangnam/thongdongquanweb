@@ -1650,6 +1650,26 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration: none;
 }
 
+.desk-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: var(--color-brown);
+  font-size: 0.85rem;
+}
+
+.language-toggle.desk-language {
+  background: rgba(26, 26, 26, 0.05);
+  color: var(--color-dark);
+  border-color: rgba(93, 78, 55, 0.25);
+}
+
+.language-toggle.desk-language:hover {
+  background: var(--color-gold);
+  color: var(--color-dark);
+  border-color: var(--color-gold);
+}
+
 .desk-main {
   width: min(1180px, calc(100% - 2rem));
   margin: 2rem auto 4rem;

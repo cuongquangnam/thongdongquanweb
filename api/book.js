@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { availabilityForStay, createDirectBooking } from '../lib/db.js';
 import { nightsBetween } from '../lib/dates.js';
 import { readJson, requestOrigin, sendJson } from '../lib/http.js';
+import { normalizeLanguage } from '../lib/language.js';
 import { createPaymentUrl, ninepayConfigured } from '../lib/ninepay.js';
 import { roomById } from '../lib/rooms.js';
 
@@ -18,6 +19,7 @@ export default async function handler(req, res) {
   const guestName = String(body.guestName || '').trim();
   const email = String(body.email || '').trim();
   const phone = String(body.phone || '').trim();
+  const language = normalizeLanguage(body.language);
   if (!room || nights < 1 || nights > 30) return sendJson(res, 400, { error: 'Choose a room and a valid stay.' });
   if (guestName.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.length < 8) {
     return sendJson(res, 400, { error: 'Enter the guest name, email, and phone number.' });
@@ -30,7 +32,7 @@ export default async function handler(req, res) {
     if (!available || available.available < 1) {
       return sendJson(res, 409, { error: 'That room is no longer available for these dates.' });
     }
-    await createDirectBooking({ reference: invoice, guestName, email, phone, checkIn, checkOut, amount, roomId: room.id });
+    await createDirectBooking({ reference: invoice, guestName, email, phone, checkIn, checkOut, amount, roomId: room.id, language });
   } catch (error) {
     return sendJson(res, error.status || 500, { error: error.message });
   }

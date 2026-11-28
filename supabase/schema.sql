@@ -18,10 +18,16 @@ create table if not exists bookings (
   check_out date not null,
   status text not null,
   amount integer not null default 0,
+  language text not null default 'en' check (language in ('en', 'vi')),
   channel_updated boolean not null default false,
   created_at timestamptz,
   paid_at timestamptz
 );
+
+alter table bookings add column if not exists language text;
+update bookings set language = 'en' where language is null;
+alter table bookings alter column language set default 'en';
+alter table bookings alter column language set not null;
 
 create table if not exists booking_rooms (
   reference text not null references bookings (reference) on delete cascade,

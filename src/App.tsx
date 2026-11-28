@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import { readStoredLanguage, storeLanguage } from '../lib/language.js';
 
 // TypeScript: define interfaces for Room, Testimonial, Image Data
 interface Room {
@@ -296,7 +297,7 @@ const translations = {
 function App() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [language, setLanguage] = useState<'en' | 'vi'>('en');
+  const [language, setLanguage] = useState<'en' | 'vi'>(() => readStoredLanguage());
   
   const t = translations[language];
 
@@ -307,6 +308,10 @@ function App() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const toggleLanguage = () => {
+    setLanguage(storeLanguage(language === 'en' ? 'vi' : 'en'));
+  };
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -345,7 +350,7 @@ function App() {
           <div className="nav-actions">
             <button 
               className="language-toggle"
-              onClick={() => setLanguage(language === 'en' ? 'vi' : 'en')}
+              onClick={toggleLanguage}
               aria-label="Toggle language"
             >
               {language === 'en' ? 'VI' : 'EN'}
@@ -403,7 +408,7 @@ function App() {
           <li>
             <button 
               className="language-toggle mobile"
-              onClick={() => setLanguage(language === 'en' ? 'vi' : 'en')}
+              onClick={toggleLanguage}
               aria-label="Toggle language"
             >
               {language === 'en' ? 'VI' : 'EN'}
