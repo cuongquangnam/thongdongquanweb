@@ -1,4 +1,8 @@
 {
+  "functions": {
+    "api/pay/return.js": { "includeFiles": "public/lobby.jpg" },
+    "api/pay/ipn.js": { "includeFiles": "public/lobby.jpg" }
+  },
   "rewrites": [
     { "source": "/admin", "destination": "/index.html" },
     { "source": "/book", "destination": "/index.html" },
