@@ -20,7 +20,6 @@ type Language = 'en' | 'vi';
 
 const copy = {
   en: {
-    bookARoom: 'Book a room',
     availableRooms: 'Available rooms',
     checkIn: 'Check in',
     checkOut: 'Check out',
@@ -70,7 +69,6 @@ const copy = {
     },
   },
   vi: {
-    bookARoom: 'Đặt phòng',
     availableRooms: 'Phòng còn trống',
     checkIn: 'Nhận phòng',
     checkOut: 'Trả phòng',
@@ -205,7 +203,6 @@ export default function BookPage() {
       <header className="desk-bar">
         <a href="/">Thong Dong Quán</a>
         <div className="desk-bar-actions">
-          <span>{t.bookARoom}</span>
           <button className="language-toggle desk-language" type="button" onClick={toggleLanguage} aria-label="Toggle language">
             {language === 'en' ? 'VI' : 'EN'}
           </button>
@@ -215,7 +212,7 @@ export default function BookPage() {
         {result ? (
           <section className={`book-result is-${result.tone}`} aria-live="polite">
             <div className="book-result-media">
-              <img src="/lobby.jpg" alt={t.lobbyAlt} />
+              <img src="/lobby-hd.jpg" alt={t.lobbyAlt} />
             </div>
             <div className="book-result-body">
               <p className="book-result-eyebrow">Thong Dong Quán</p>

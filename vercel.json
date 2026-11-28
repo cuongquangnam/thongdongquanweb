@@ -1,7 +1,7 @@
 {
   "functions": {
-    "api/pay/return.js": { "includeFiles": "public/lobby.jpg" },
-    "api/pay/ipn.js": { "includeFiles": "public/lobby.jpg" }
+    "api/pay/return.js": { "includeFiles": "public/lobby-email.jpg" },
+    "api/pay/ipn.js": { "includeFiles": "public/lobby-email.jpg" }
   },
   "rewrites": [
     { "source": "/admin", "destination": "/index.html" },
