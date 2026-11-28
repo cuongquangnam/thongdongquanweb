@@ -9,10 +9,17 @@ function devApi() {
       server.middlewares.use(async (req, res, next) => {
         const url = new URL(req.url || '/', 'http://localhost');
         if (!url.pathname.startsWith('/api/')) return next();
-        const file = path.resolve(process.cwd(), `${url.pathname.slice(1)}.js`);
+        const query = Object.fromEntries(url.searchParams);
+        let pathname = url.pathname;
+        const cancelMatch = pathname.match(/^\/api\/pay\/cancel\/([^/]+)$/);
+        if (cancelMatch) {
+          pathname = '/api/pay/cancel';
+          query.invoice = decodeURIComponent(cancelMatch[1]);
+        }
+        const file = path.resolve(process.cwd(), `${pathname.slice(1)}.js`);
         try {
           const mod = await server.ssrLoadModule(file);
-          req.query = Object.fromEntries(url.searchParams);
+          req.query = query;
           res.status = (code) => {
             res.statusCode = code;
             return res;

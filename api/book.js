@@ -43,7 +43,7 @@ export default async function handler(req, res) {
     amount,
     description: `${room.name} ${checkIn} to ${checkOut}`.slice(0, 255),
     returnUrl: `${origin}/api/pay/return`,
-    backUrl: `${origin}/api/pay/cancel?invoice=${encodeURIComponent(invoice)}`,
+    backUrl: `${origin}/api/pay/cancel/${encodeURIComponent(invoice)}`,
   });
   return sendJson(res, 200, { paymentUrl, invoice, amount });
 }
