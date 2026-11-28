@@ -175,19 +175,6 @@ export default function BookPage() {
     if (!resultStatus) loadAvailability();
   }, []);
 
-  useEffect(() => {
-    if (!invoice) return undefined;
-    if (resultStatus !== 'cancelled' && resultStatus !== 'failed' && resultStatus !== 'invalid') return undefined;
-    const controller = new AbortController();
-    fetch('/api/pay/cancel', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ invoice }),
-      signal: controller.signal,
-    }).catch(() => undefined);
-    return () => controller.abort();
-  }, [resultStatus, invoice]);
-
   async function pay(event: FormEvent) {
     event.preventDefault();
     setError('');
