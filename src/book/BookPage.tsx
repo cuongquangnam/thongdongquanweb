@@ -21,9 +21,48 @@ function isoDaysFromNow(days: number) {
   return date.toISOString().slice(0, 10);
 }
 
+function resultCopy(status: string | null) {
+  if (status === 'paid') {
+    return {
+      eyebrow: 'Thong Dong Quán',
+      title: 'Payment received',
+      body: 'Thank you for booking with us. A confirmation has been sent to your email, and the hotel will confirm your stay shortly.',
+      action: 'Back to availability',
+      tone: 'paid' as const,
+    };
+  }
+  if (status === 'cancelled') {
+    return {
+      eyebrow: 'Thong Dong Quán',
+      title: 'Payment cancelled',
+      body: 'You left the payment page before finishing. No charge was recorded. You can choose the dates again whenever you are ready.',
+      action: 'Choose dates again',
+      tone: 'missed' as const,
+    };
+  }
+  if (status === 'failed') {
+    return {
+      eyebrow: 'Thong Dong Quán',
+      title: 'Payment was not completed',
+      body: 'The payment did not go through. No charge was recorded. You can try again with the same dates.',
+      action: 'Try again',
+      tone: 'missed' as const,
+    };
+  }
+  return {
+    eyebrow: 'Thong Dong Quán',
+    title: 'We could not confirm the payment',
+    body: 'The payment result could not be verified. If you were charged, please contact the hotel with your invoice number and we will help.',
+    action: 'Back to availability',
+    tone: 'missed' as const,
+  };
+}
+
 export default function BookPage() {
   const params = new URLSearchParams(window.location.search);
   const resultStatus = window.location.pathname.startsWith('/book/result') ? params.get('status') : null;
+  const invoice = params.get('invoice') || '';
+  const result = resultStatus ? resultCopy(resultStatus) : null;
   const [checkIn, setCheckIn] = useState(isoDaysFromNow(1));
   const [checkOut, setCheckOut] = useState(isoDaysFromNow(2));
   const [availability, setAvailability] = useState<Availability | null>(null);
@@ -85,15 +124,33 @@ export default function BookPage() {
         <span>Book a room</span>
       </header>
       <main className="desk-main">
-        {resultStatus ? (
-          <section className="desk-card">
-            <h1>{resultStatus === 'paid' ? 'Payment received' : 'Payment was not completed'}</h1>
-            <p>
-              {resultStatus === 'paid'
-                ? 'The hotel has been emailed. We will confirm your stay shortly.'
-                : 'No charge was recorded. You can choose the dates again.'}
-            </p>
-            <a className="desk-button" href="/book">Back to availability</a>
+        {result ? (
+          <section className={`book-result is-${result.tone}`} aria-live="polite">
+            <div className="book-result-media">
+              <img src="/lobby.jpg" alt="The lobby of Thong Dong Quán" />
+            </div>
+            <div className="book-result-body">
+              <p className="book-result-eyebrow">{result.eyebrow}</p>
+              <h1>{result.title}</h1>
+              <p className="book-result-copy">{result.body}</p>
+              {invoice && (
+                <dl className="book-result-meta">
+                  <div>
+                    <dt>Invoice</dt>
+                    <dd>{invoice}</dd>
+                  </div>
+                  <div>
+                    <dt>Status</dt>
+                    <dd className="status">{resultStatus}</dd>
+                  </div>
+                </dl>
+              )}
+              <div className="book-result-actions">
+                <a className="desk-button" href="/book">{result.action}</a>
+                <a className="desk-text" href="/">Return to the hotel site</a>
+              </div>
+              <p className="book-result-contact">Need help? Call 0916134599</p>
+            </div>
           </section>
         ) : (
           <>
