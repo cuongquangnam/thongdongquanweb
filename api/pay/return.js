@@ -1,12 +1,25 @@
+import { cancelPendingBooking } from '../../lib/db.js';
 import { requestOrigin } from '../../lib/http.js';
 import { sendBookingMail } from '../../lib/mail.js';
 import { paymentSucceeded, readPaymentResult } from '../../lib/ninepay.js';
 import { markDirectPaid } from '../../lib/payments.js';
 
+async function releaseInvoice(invoice) {
+  if (!invoice) return;
+  try {
+    await cancelPendingBooking(invoice);
+  } catch (error) {
+    console.error('Could not release cancelled booking', error);
+  }
+}
+
 async function finish(result, checksum) {
   const payload = readPaymentResult(result, checksum);
   if (!payload) return { status: 'invalid' };
-  if (!paymentSucceeded(payload)) return { status: 'failed', invoice: payload.invoice_no };
+  if (!paymentSucceeded(payload)) {
+    await releaseInvoice(payload.invoice_no);
+    return { status: 'failed', invoice: payload.invoice_no };
+  }
   const { booking, alreadyPaid } = await markDirectPaid(payload.invoice_no);
   if (booking && !alreadyPaid) {
     try {

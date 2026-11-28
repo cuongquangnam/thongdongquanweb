@@ -38,12 +38,14 @@ export default async function handler(req, res) {
   }
 
   const origin = requestOrigin(req);
+  // 9Pay's Huỷ uses return_url with a failed result, same as their sample app.
+  const returnUrl = `${origin}/api/pay/return`;
   const paymentUrl = createPaymentUrl({
     invoiceNo: invoice,
     amount,
     description: `${room.name} ${checkIn} to ${checkOut}`.slice(0, 255),
-    returnUrl: `${origin}/api/pay/return`,
-    backUrl: `${origin}/api/pay/cancel/${encodeURIComponent(invoice)}`,
+    returnUrl,
+    backUrl: returnUrl,
   });
   return sendJson(res, 200, { paymentUrl, invoice, amount });
 }

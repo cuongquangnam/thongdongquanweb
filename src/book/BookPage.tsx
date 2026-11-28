@@ -176,7 +176,8 @@ export default function BookPage() {
   }, []);
 
   useEffect(() => {
-    if (resultStatus !== 'cancelled' || !invoice) return undefined;
+    if (!invoice) return undefined;
+    if (resultStatus !== 'cancelled' && resultStatus !== 'failed' && resultStatus !== 'invalid') return undefined;
     const controller = new AbortController();
     fetch('/api/pay/cancel', {
       method: 'POST',

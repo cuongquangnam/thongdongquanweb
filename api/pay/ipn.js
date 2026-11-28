@@ -1,3 +1,4 @@
+import { cancelPendingBooking } from '../../lib/db.js';
 import { readJson } from '../../lib/http.js';
 import { sendBookingMail } from '../../lib/mail.js';
 import { paymentSucceeded, readPaymentResult } from '../../lib/ninepay.js';
@@ -18,6 +19,12 @@ export default async function handler(req, res) {
       } catch (error) {
         console.error('Booking email failed', error);
       }
+    }
+  } else {
+    try {
+      await cancelPendingBooking(payload.invoice_no);
+    } catch (error) {
+      console.error('Could not release cancelled booking', error);
     }
   }
   return res.status(200).send('ok');
