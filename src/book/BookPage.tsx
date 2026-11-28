@@ -24,6 +24,7 @@ const copy = {
     checkIn: 'Check in',
     checkOut: 'Check out',
     check: 'Check',
+    checking: 'Checking',
     available: (count: number) => `${count} available`,
     soldOut: 'Sold out',
     perNight: 'VND / night',
@@ -73,6 +74,7 @@ const copy = {
     checkIn: 'Nhận phòng',
     checkOut: 'Trả phòng',
     check: 'Kiểm tra',
+    checking: 'Đang kiểm tra',
     available: (count: number) => `Còn ${count} phòng`,
     soldOut: 'Hết phòng',
     perNight: 'VND / đêm',
@@ -148,12 +150,13 @@ export default function BookPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
+  const [checking, setChecking] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function loadAvailability(event?: FormEvent) {
     event?.preventDefault();
     setError('');
-    setLoading(true);
+    setChecking(true);
     try {
       const response = await fetch(`/api/availability?checkIn=${checkIn}&checkOut=${checkOut}`);
       const body = await response.json();
@@ -164,7 +167,7 @@ export default function BookPage() {
       setAvailability(null);
       setError(err instanceof Error ? err.message : t.loadError);
     } finally {
-      setLoading(false);
+      setChecking(false);
     }
   }
 
@@ -247,18 +250,21 @@ export default function BookPage() {
             <section className="desk-card">
               <h1>{t.availableRooms}</h1>
               <form className="desk-dates" onSubmit={loadAvailability}>
-                <label>{t.checkIn}<input type="date" value={checkIn} onChange={(event) => setCheckIn(event.target.value)} required /></label>
-                <label>{t.checkOut}<input type="date" value={checkOut} onChange={(event) => setCheckOut(event.target.value)} required /></label>
-                <button className="desk-button" type="submit" disabled={loading}>{t.check}</button>
+                <label>{t.checkIn}<input type="date" value={checkIn} onChange={(event) => setCheckIn(event.target.value)} required disabled={checking} /></label>
+                <label>{t.checkOut}<input type="date" value={checkOut} onChange={(event) => setCheckOut(event.target.value)} required disabled={checking} /></label>
+                <button className={`desk-button${checking ? ' is-loading' : ''}`} type="submit" disabled={checking} aria-busy={checking}>
+                  {checking && <span className="desk-spinner" aria-hidden="true" />}
+                  <span>{checking ? t.checking : t.check}</span>
+                </button>
               </form>
               {error && <p className="desk-error">{error}</p>}
-              <div className="desk-rooms">
+              <div className={`desk-rooms${checking ? ' is-loading' : ''}`}>
                 {availability?.rooms.map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     className={`desk-room ${selected === item.id ? 'is-selected' : ''}`}
-                    disabled={item.available < 1}
+                    disabled={checking || item.available < 1}
                     onClick={() => setSelected(item.id)}
                   >
                     <img src={item.image} alt="" />
